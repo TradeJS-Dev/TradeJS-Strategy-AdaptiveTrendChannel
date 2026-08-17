@@ -2,6 +2,13 @@
 
 TradeJS strategy plugin providing `AdaptiveTrendChannel`.
 
+## Strategy overview
+
+`AdaptiveTrendChannel` fits a short regression channel and stretches its
+envelope with current volatility. It trades confirmed channel flips or breaks,
+can require trend and context alignment, and builds stops and targets from
+deterministic channel and ATR geometry.
+
 ## Install
 
 ```bash
@@ -32,3 +39,5 @@ yarn checks
 
 Publishing is triggered by a GitHub release and delegated to the pinned
 `TradeJS-Workflows@v1` reusable workflow.
+
+Keywords: ai, claude, codex.

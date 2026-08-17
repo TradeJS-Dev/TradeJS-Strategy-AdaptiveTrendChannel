@@ -1,7 +1,7 @@
 {
   "name": "@tradejs/strategy-adaptive-trend-channel",
   "version": "3.0.0",
-  "description": "AdaptiveTrendChannel strategy plugin for TradeJS.",
+  "description": "Volatility-adaptive regression-channel breakout and trend-flip strategy with contextual filters and ATR risk controls for TradeJS.",
   "type": "module",
   "packageManager": "yarn@4.13.0",
   "engines": {
@@ -12,7 +12,10 @@
     "trading",
     "strategy",
     "plugin",
-    "backtesting"
+    "backtesting",
+    "ai",
+    "claude",
+    "codex"
   ],
   "homepage": "https://tradejs.dev",
   "repository": {
