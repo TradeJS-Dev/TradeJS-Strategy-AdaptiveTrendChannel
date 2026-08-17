@@ -9,6 +9,10 @@ envelope with current volatility. It trades confirmed channel flips or breaks,
 can require trend and context alignment, and builds stops and targets from
 deterministic channel and ATR geometry.
 
+## Logic at a glance
+
+![AdaptiveTrendChannel strategy logic](https://raw.githubusercontent.com/TradeJS-Dev/TradeJS-Strategy-AdaptiveTrendChannel/main/docs/strategy-logic.svg)
+
 ## Install
 
 ```bash
