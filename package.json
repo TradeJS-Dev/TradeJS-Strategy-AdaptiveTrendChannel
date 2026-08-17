@@ -38,8 +38,8 @@
   "sideEffects": false,
   "dependencies": {
     "@tradejs/core": "^3.0.1",
-    "@tradejs/types": "^3.0.1",
-    "@tradejs/strategy-kit": "^3.0.0"
+    "@tradejs/strategy-kit": "^3.0.0",
+    "@tradejs/types": "^3.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
