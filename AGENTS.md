@@ -4,6 +4,21 @@
 
 These rules apply to this complete strategy repository.
 
+## Workspace Routing
+
+- The canonical workspace map is `~/dev/tradejs/AGENTS.md`. Do not scan
+  sibling repositories when that map already identifies the owner.
+- Make this strategy's source, config, deterministic gate, figures, and test
+  changes here; run `yarn checks` here.
+- Run backtest, replay, Redis, evidence, notes, and release operations from
+  `~/dev/tradejs/tradejs-project`. Keep that directory as `PROJECT_CWD` and
+  point `TRADEJS_SOURCE_REPOSITORY_ROOT` at this repository for lineage.
+- Use `$strategy-backtest-research` for implementation/backtest work,
+  `$ai-train-local-research` for deterministic gate analysis, and
+  `$strategy-release` for bounded release or forward-test work. Their
+  instructions live in `~/dev/tradejs/investing/.codex/skills/`.
+- Do not create `data/`, `notes/`, runtime config, or deployment files here.
+
 ## Ownership
 
 This repository owns `AdaptiveTrendChannel` strategy behavior, configuration, adapters, figures, and tests.
