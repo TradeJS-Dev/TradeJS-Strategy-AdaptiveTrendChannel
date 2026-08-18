@@ -41,7 +41,10 @@ yarn install --immutable
 yarn checks
 ```
 
-Publishing is triggered by a GitHub release and delegated to the pinned
-`TradeJS-Workflows@v1` reusable workflow.
+Publishing is beta-first and delegated to the pinned
+`TradeJS-Workflows@v1` reusable workflow. A relevant push publishes a unique
+prerelease and moves the npm `beta` tag only after the production-like Project
+image passes. The current verified beta is promoted to one stable `latest`
+release by the weekly automation; production never consumes prereleases.
 
 Keywords: ai, claude, codex.
