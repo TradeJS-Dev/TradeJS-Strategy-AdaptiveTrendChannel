@@ -1091,7 +1091,7 @@ __metadata:
   resolution: "@tradejs/strategy-adaptive-trend-channel@workspace:."
   dependencies:
     "@tradejs/core": "npm:^3.0.1"
-    "@tradejs/strategy-kit": "npm:^3.0.0"
+    "@tradejs/strategy-kit": "npm:^3.0.1"
     "@tradejs/types": "npm:^3.0.1"
     "@types/jest": "npm:^29.5.14"
     jest: "npm:^29.7.0"
@@ -1102,13 +1102,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tradejs/strategy-kit@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@tradejs/strategy-kit@npm:3.0.0"
+"@tradejs/strategy-kit@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@tradejs/strategy-kit@npm:3.0.1"
   dependencies:
     "@tradejs/core": "npm:^3.0.1"
     "@tradejs/types": "npm:^3.0.1"
-  checksum: 10c0/fea714cc2f124413f428c8aca2da34767ccaa0f78de5bf07ebdbd0999548def2547987fb9079099ba8d674eeb4ffba3072aa09f680e75d1b206c227b0a3728e2
+  checksum: 10c0/425e4e97e5cd1995c9ad32cd6e61bdb098da4b0dde069e90438081e92e0852a2b4757ebf1bd06733b009359dc365c8756155793d1287642cc2f2b8eaa022eef2
   languageName: node
   linkType: hard
 
