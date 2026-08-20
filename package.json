@@ -13,6 +13,10 @@
     "strategy",
     "plugin",
     "backtesting",
+    "crypto",
+    "bybit",
+    "binance",
+    "coinbase",
     "ai",
     "claude",
     "codex"
@@ -40,12 +44,10 @@
     }
   },
   "sideEffects": false,
-  "dependencies": {
+  "devDependencies": {
     "@tradejs/core": "^3.0.1",
     "@tradejs/strategy-kit": "^3.0.1",
-    "@tradejs/types": "^3.0.1"
-  },
-  "devDependencies": {
+    "@tradejs/types": "^3.0.1",
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "prettier": "^3.6.2",
@@ -65,5 +67,10 @@
     "provenance": true
   },
   "license": "BUSL-1.1",
-  "author": "aleksnick (https://github.com/aleksnick)"
+  "author": "aleksnick (https://github.com/aleksnick)",
+  "peerDependencies": {
+    "@tradejs/core": "^3.0.1",
+    "@tradejs/strategy-kit": "^3.0.1",
+    "@tradejs/types": "^3.0.1"
+  }
 }

@@ -38,3 +38,9 @@ This repository owns `AdaptiveTrendChannel` strategy behavior, configuration, ad
 
 Run `yarn checks` before every commit. Keep CI and release workflows as thin
 callers of the pinned reusable workflows in `TradeJS-Workflows`.
+
+## Runtime Dependency Contract
+
+- Keep every `@tradejs/*` runtime package in both `peerDependencies` and `devDependencies`, never in `dependencies`.
+- The consuming TradeJS Project must own the exact runtime composition; nested TradeJS package copies are forbidden.
+- Keep the package-contract test in `yarn checks` whenever dependency metadata changes.
