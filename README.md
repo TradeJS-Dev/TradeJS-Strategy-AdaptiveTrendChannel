@@ -13,6 +13,15 @@ deterministic channel and ATR geometry.
 
 ![AdaptiveTrendChannel strategy logic](https://raw.githubusercontent.com/TradeJS-Dev/TradeJS-Strategy-AdaptiveTrendChannel/main/docs/strategy-logic.svg)
 
+## Signal on an example chart
+
+The example follows a rising regression channel until price closes through its adaptive upper envelope and the context filters accept the transition.
+
+![AdaptiveTrendChannel signal on an illustrative ticker chart](https://raw.githubusercontent.com/TradeJS-Dev/TradeJS-Strategy-AdaptiveTrendChannel/main/docs/signal-example.svg)
+
+The illustration is schematic, not market data. Exact thresholds, confirmation
+rules, and risk parameters come from the active TradeJS strategy config.
+
 ## Install
 
 ```bash
