@@ -52,8 +52,9 @@ yarn checks
 
 Publishing is beta-first and delegated to the pinned
 `TradeJS-Workflows@v1` reusable workflow. A relevant push publishes a unique
-prerelease and moves the npm `beta` tag only after the production-like Project
-image passes. The current verified beta is promoted to one stable `latest`
+prerelease and moves the npm `beta` tag only after the repository checks pass
+and the published tarball imports successfully in a clean npm consumer. The
+current verified beta is promoted to one stable `latest`
 release by the weekly automation; production never consumes prereleases.
 
 Keywords: ai, claude, codex.
