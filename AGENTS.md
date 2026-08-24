@@ -14,9 +14,11 @@ These rules apply to this complete strategy repository.
   `~/dev/tradejs/tradejs-project`. Keep that directory as `PROJECT_CWD` and
   point `TRADEJS_SOURCE_REPOSITORY_ROOT` at this repository for lineage.
 - Use `$strategy-backtest-research` for implementation/backtest work,
-  `$ai-train-local-research` for deterministic gate analysis, and
-  `$strategy-release` for bounded release or forward-test work. Their
-  instructions live in `~/dev/tradejs/investing/.codex/skills/`.
+  `$ai-train-local-research` for deterministic gate analysis,
+  `$strategy-improvement-research` for bounded new research,
+  `$strategy-forward-start` for an explicitly authorized risk-1 rollout, and
+  `$strategy-forward-status` for read-only live inspection. Their instructions
+  live in `~/dev/tradejs/investing/.codex/skills/`.
 - Do not create `data/`, `notes/`, runtime config, or deployment files here.
 
 ## Ownership
