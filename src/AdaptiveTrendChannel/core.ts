@@ -15,6 +15,13 @@ import {
   buildStructureRiskPlan,
   isStopLossOnCorrectSide,
 } from "@tradejs/strategy-kit/risk";
+import {
+  AdaptiveTrendChannelExitState,
+  advanceAdaptiveTrendChannelExit,
+  clearAdaptiveTrendChannelPendingExit,
+  resolveAdaptiveTrendChannelExitConfirmationBars,
+  resolveAdaptiveTrendChannelReentryCooldownMs,
+} from "./lifecycle";
 
 const isOpenPosition = (position: Position | null): position is Position =>
   Boolean(
@@ -36,7 +43,15 @@ const buildAdaptiveTrendChannelStateKey = (
     atrStretch: config.ADAPTIVE_TREND_CHANNEL_ATR_STRETCH,
     volatilityLookback: config.ADAPTIVE_TREND_CHANNEL_VOLATILITY_LOOKBACK,
     flipConfirmationBars: config.ADAPTIVE_TREND_CHANNEL_FLIP_CONFIRMATION_BARS,
+    requirePriceAcceptance:
+      config.ADAPTIVE_TREND_CHANNEL_REQUIRE_PRICE_ACCEPTANCE,
     maxFigurePoints: config.ADAPTIVE_TREND_CHANNEL_MAX_FIGURE_POINTS,
+    exitConfirmationBars: config.ADAPTIVE_TREND_CHANNEL_EXIT_CONFIRMATION_BARS,
+    exitConfirmationBarsLong:
+      config.ADAPTIVE_TREND_CHANNEL_EXIT_CONFIRMATION_BARS_LONG,
+    exitConfirmationBarsShort:
+      config.ADAPTIVE_TREND_CHANNEL_EXIT_CONFIRMATION_BARS_SHORT,
+    reentryCooldownMs: config.ADAPTIVE_TREND_CHANNEL_REENTRY_COOLDOWN_MS,
   });
 
 export const createAdaptiveTrendChannelCore: CreateStrategyCore<
@@ -62,6 +77,13 @@ export const createAdaptiveTrendChannelCore: CreateStrategyCore<
   );
   const lastTradeController = strategyApi.createLastTradeController({
     enabled: true,
+    cooldownMs: resolveAdaptiveTrendChannelReentryCooldownMs(config),
+  });
+  const exitState = strategyApi.createStateController<
+    AdaptiveTrendChannelExitState,
+    ReturnType<typeof advanceAdaptiveTrendChannelExit>
+  >("AdaptiveTrendChannelExit", () => ({ pending: null }), {
+    configKey: buildAdaptiveTrendChannelStateKey(config),
   });
   const nextDetectorState = (
     candle: Parameters<
@@ -89,29 +111,53 @@ export const createAdaptiveTrendChannelCore: CreateStrategyCore<
         (position.direction === "LONG"
           ? signal.direction === "SHORT"
           : signal.direction === "LONG");
-
-      if (
+      const oppositeRegime =
+        snapshot != null &&
+        (position.direction === "LONG"
+          ? snapshot.regime === -1
+          : snapshot.regime === 1);
+      const triggerReason =
         Boolean(config.ADAPTIVE_TREND_CHANNEL_EXIT_ON_CHANNEL_BREAK) &&
         channelBreak
-      ) {
-        return strategyApi.exit({
-          code: "ADAPTIVE_TREND_CHANNEL_BREAK_EXIT",
-          direction: position.direction,
-        });
-      }
+          ? ("CHANNEL_BREAK" as const)
+          : Boolean(config.ADAPTIVE_TREND_CHANNEL_EXIT_ON_OPPOSITE_FLIP) &&
+              oppositeSignal
+            ? ("OPPOSITE_FLIP" as const)
+            : null;
+      const confirmedExitReason = exitState.oncePerTimestamp(
+        candle.timestamp,
+        (state) =>
+          advanceAdaptiveTrendChannelExit({
+            state,
+            positionDirection: position.direction,
+            triggerReason,
+            channelBreakPersists: channelBreak,
+            oppositeRegimePersists: oppositeRegime,
+            confirmationBars: resolveAdaptiveTrendChannelExitConfirmationBars({
+              config,
+              direction: position.direction,
+            }),
+            timestamp: candle.timestamp,
+          }),
+      );
 
-      if (
-        Boolean(config.ADAPTIVE_TREND_CHANNEL_EXIT_ON_OPPOSITE_FLIP) &&
-        oppositeSignal
-      ) {
+      if (confirmedExitReason) {
         return strategyApi.exit({
-          code: "ADAPTIVE_TREND_CHANNEL_OPPOSITE_FLIP_EXIT",
+          code:
+            confirmedExitReason === "CHANNEL_BREAK"
+              ? "ADAPTIVE_TREND_CHANNEL_BREAK_EXIT"
+              : "ADAPTIVE_TREND_CHANNEL_OPPOSITE_FLIP_EXIT",
           direction: position.direction,
         });
       }
 
       return strategyApi.skip("POSITION_EXISTS");
     }
+
+    exitState.oncePerTimestamp(candle.timestamp, (state) => {
+      clearAdaptiveTrendChannelPendingExit(state);
+      return null;
+    });
 
     if (!signal) {
       return strategyApi.skip("NO_ADAPTIVE_TREND_CHANNEL_FLIP");

@@ -182,6 +182,18 @@ const getConfigNumbers = (config: AdaptiveTrendChannelConfig) => ({
   ),
 });
 
+export const isAdaptiveTrendChannelPriceAccepted = ({
+  direction,
+  close,
+  windowPeak,
+  windowTrough,
+}: {
+  direction: Direction;
+  close: number;
+  windowPeak: number;
+  windowTrough: number;
+}) => (direction === "LONG" ? close > windowPeak : close < windowTrough);
+
 const linearRegressionNow = (values: number[], length: number) => {
   if (values.length < length) {
     return null;
@@ -439,7 +451,14 @@ export const createAdaptiveTrendChannelEngine = ({
       confirmedFlipDirection != null &&
       breakoutDistancePct != null &&
       breakoutDistanceAtr != null &&
-      channelWidthPct != null
+      channelWidthPct != null &&
+      (!config.ADAPTIVE_TREND_CHANNEL_REQUIRE_PRICE_ACCEPTANCE ||
+        isAdaptiveTrendChannelPriceAccepted({
+          direction: confirmedFlipDirection,
+          close,
+          windowPeak,
+          windowTrough,
+        }))
     ) {
       state.signal = {
         direction: confirmedFlipDirection,

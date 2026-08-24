@@ -1,7 +1,10 @@
 /** @jest-environment node */
 
 import { config as DEFAULT_CONFIG } from "../config";
-import { createAdaptiveTrendChannelEngine } from "../engine";
+import {
+  createAdaptiveTrendChannelEngine,
+  isAdaptiveTrendChannelPriceAccepted,
+} from "../engine";
 
 const makeCandle = (
   index: number,
@@ -85,6 +88,43 @@ describe("AdaptiveTrendChannel engine", () => {
       snapshot: { flipDown: true, regime: -1 },
     });
   });
+
+  it("keeps disabled price acceptance on the legacy signal path", () => {
+    const candles = buildOscillatingCandles();
+    const omitted = createAdaptiveTrendChannelEngine({
+      config: makeConfig({
+        ADAPTIVE_TREND_CHANNEL_REQUIRE_PRICE_ACCEPTANCE: undefined,
+      }),
+    });
+    const disabled = createAdaptiveTrendChannelEngine({
+      config: makeConfig({
+        ADAPTIVE_TREND_CHANNEL_REQUIRE_PRICE_ACCEPTANCE: false,
+      }),
+    });
+
+    expect(candles.map((candle) => disabled.next(candle as any))).toEqual(
+      candles.map((candle) => omitted.next(candle as any)),
+    );
+  });
+
+  it.each([
+    ["LONG", 101, true],
+    ["LONG", 100, false],
+    ["SHORT", 89, true],
+    ["SHORT", 90, false],
+  ])(
+    "checks %s price acceptance at the envelope boundary",
+    (direction, close, expected) => {
+      expect(
+        isAdaptiveTrendChannelPriceAccepted({
+          direction: direction as any,
+          close: close as number,
+          windowPeak: 100,
+          windowTrough: 90,
+        }),
+      ).toBe(expected);
+    },
+  );
 
   it.each([
     { confirmationBars: 1, signalIndex: 11 },
