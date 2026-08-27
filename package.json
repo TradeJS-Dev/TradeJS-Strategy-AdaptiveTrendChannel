@@ -1,6 +1,6 @@
 {
   "name": "@tradejs/strategy-adaptive-trend-channel",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Volatility-adaptive regression-channel breakout and trend-flip strategy with contextual filters and ATR risk controls for TradeJS.",
   "type": "module",
   "packageManager": "yarn@4.13.0",
