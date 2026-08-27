@@ -9,6 +9,11 @@ envelope with current volatility. It trades confirmed channel flips or breaks,
 can require trend and context alignment, and builds stops and targets from
 deterministic channel and ATR geometry.
 
+Optional lifecycle controls can require price acceptance beyond the recent
+window, delay flip signals, confirm channel-break or opposite-flip exits for a
+configured number of bars, and enforce a post-trade re-entry cooldown. Exit
+confirmation supports direction-specific `_LONG` and `_SHORT` overrides.
+
 ## Logic at a glance
 
 ![AdaptiveTrendChannel strategy logic](https://raw.githubusercontent.com/TradeJS-Dev/TradeJS-Strategy-AdaptiveTrendChannel/main/docs/strategy-logic.svg)
