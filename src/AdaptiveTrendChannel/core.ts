@@ -203,10 +203,10 @@ export const createAdaptiveTrendChannelCore: CreateStrategyCore<
       stopLossPrice,
       targetR: Number(config.ADAPTIVE_TREND_CHANNEL_TARGET_R_MULT ?? 2),
       maxLossValue: config.MAX_LOSS_VALUE,
-      feeRate: Number(config.FEE_PERCENT ?? 0),
+      feeRate: Number(config.RISK_FEE_RATE ?? 0),
       slippageBps:
-        Number(config.SLIPPAGE_BASE_BPS ?? 0) +
-        Number(config.SLIPPAGE_MARKET_IMPACT_BPS ?? 0),
+        Number(config.RISK_SLIPPAGE_BPS ?? 0) +
+        Number(config.RISK_MARKET_IMPACT_BPS ?? 0),
     });
 
     if (!qty || !Number.isFinite(qty) || qty <= 0) {
