@@ -2,8 +2,10 @@
 
 import { config as DEFAULT_CONFIG } from "../config";
 import {
+  buildAdaptiveTrendChannelSignalContext,
   createAdaptiveTrendChannelEngine,
   isAdaptiveTrendChannelPriceAccepted,
+  isAdaptiveTrendChannelPriceAcceptedAtBoundary,
 } from "../engine";
 
 const makeCandle = (
@@ -125,6 +127,62 @@ describe("AdaptiveTrendChannel engine", () => {
       ).toBe(expected);
     },
   );
+
+  it.each([
+    ["LONG", 101, true],
+    ["LONG", 100, false],
+    ["SHORT", 99, true],
+    ["SHORT", 100, false],
+  ])(
+    "checks %s decision price against the saved acceptance boundary",
+    (direction, price, expected) => {
+      expect(
+        isAdaptiveTrendChannelPriceAcceptedAtBoundary({
+          direction: direction as any,
+          price: price as number,
+          acceptanceBoundary: 100,
+        }),
+      ).toBe(expected);
+    },
+  );
+
+  it("keeps the signal acceptance boundary while tracing the decision price", () => {
+    const candles = buildOscillatingCandles();
+    const engine = createAdaptiveTrendChannelEngine({
+      config: makeConfig(),
+    });
+    const state = candles
+      .map((candle) => engine.next(candle as any))
+      .find(({ signal }) => signal != null);
+    const signal = state?.signal;
+
+    expect(signal).toBeDefined();
+    if (!signal) {
+      throw new Error("Expected an AdaptiveTrendChannel signal");
+    }
+    expect(signal?.acceptanceBoundary).toBe(
+      signal?.direction === "LONG"
+        ? state?.snapshot?.windowPeak
+        : state?.snapshot?.windowTrough,
+    );
+
+    const decisionPrice =
+      signal?.direction === "LONG"
+        ? (signal?.acceptanceBoundary ?? 0) - 1
+        : (signal?.acceptanceBoundary ?? 0) + 1;
+    const context = buildAdaptiveTrendChannelSignalContext(
+      signal,
+      decisionPrice,
+    );
+
+    expect(context).toMatchObject({
+      acceptanceBoundary: signal?.acceptanceBoundary,
+      signalPrice: signal?.close,
+      decisionPrice,
+      decisionPriceAccepted: false,
+      currentPrice: decisionPrice,
+    });
+  });
 
   it.each([
     { confirmationBars: 1, signalIndex: 11 },

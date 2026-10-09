@@ -28,6 +28,7 @@ export interface AdaptiveTrendChannelSnapshot {
 export interface AdaptiveTrendChannelSignal {
   direction: Direction;
   regime: 1 | -1;
+  acceptanceBoundary: number;
   centerline: number;
   roof: number;
   floor: number;
@@ -182,6 +183,19 @@ const getConfigNumbers = (config: AdaptiveTrendChannelConfig) => ({
   ),
 });
 
+export const isAdaptiveTrendChannelPriceAcceptedAtBoundary = ({
+  direction,
+  price,
+  acceptanceBoundary,
+}: {
+  direction: Direction;
+  price: number;
+  acceptanceBoundary: number;
+}) =>
+  direction === "LONG"
+    ? price > acceptanceBoundary
+    : price < acceptanceBoundary;
+
 export const isAdaptiveTrendChannelPriceAccepted = ({
   direction,
   close,
@@ -192,7 +206,12 @@ export const isAdaptiveTrendChannelPriceAccepted = ({
   close: number;
   windowPeak: number;
   windowTrough: number;
-}) => (direction === "LONG" ? close > windowPeak : close < windowTrough);
+}) =>
+  isAdaptiveTrendChannelPriceAcceptedAtBoundary({
+    direction,
+    price: close,
+    acceptanceBoundary: direction === "LONG" ? windowPeak : windowTrough,
+  });
 
 const linearRegressionNow = (values: number[], length: number) => {
   if (values.length < length) {
@@ -219,9 +238,11 @@ const average = (values: number[]) =>
 
 export const buildAdaptiveTrendChannelSignalContext = (
   signal: AdaptiveTrendChannelSignal,
+  decisionPrice: number = signal.close,
 ) => ({
   signalDirection: signal.direction,
   regime: signal.regime,
+  acceptanceBoundary: signal.acceptanceBoundary,
   centerline: signal.centerline,
   roof: signal.roof,
   floor: signal.floor,
@@ -230,7 +251,14 @@ export const buildAdaptiveTrendChannelSignalContext = (
   breakoutDistancePct: signal.breakoutDistancePct,
   breakoutDistanceAtr: signal.breakoutDistanceAtr,
   channelWidthPct: signal.channelWidthPct,
-  currentPrice: signal.close,
+  signalPrice: signal.close,
+  decisionPrice,
+  decisionPriceAccepted: isAdaptiveTrendChannelPriceAcceptedAtBoundary({
+    direction: signal.direction,
+    price: decisionPrice,
+    acceptanceBoundary: signal.acceptanceBoundary,
+  }),
+  currentPrice: decisionPrice,
 });
 
 export type AdaptiveTrendChannelSignalContext = ReturnType<
@@ -463,6 +491,8 @@ export const createAdaptiveTrendChannelEngine = ({
       state.signal = {
         direction: confirmedFlipDirection,
         regime: state.regime,
+        acceptanceBoundary:
+          confirmedFlipDirection === "LONG" ? windowPeak : windowTrough,
         centerline: state.centerline,
         roof,
         floor,
