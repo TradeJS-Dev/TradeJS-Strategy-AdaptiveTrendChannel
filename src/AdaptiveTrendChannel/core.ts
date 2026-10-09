@@ -228,10 +228,10 @@ export const createAdaptiveTrendChannelCore: CreateStrategyCore<
       direction: modeConfig.direction,
       indicators: indicators ?? {},
       additionalIndicators: {
-        adaptiveTrendChannelContext: buildAdaptiveTrendChannelSignalContext({
-          ...signal,
-          close: currentPrice,
-        }),
+        adaptiveTrendChannelContext: buildAdaptiveTrendChannelSignalContext(
+          signal,
+          currentPrice,
+        ),
       },
       figures: buildAdaptiveTrendChannelFigures({
         signal,
