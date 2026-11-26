@@ -1,6 +1,6 @@
 {
   "name": "@tradejs/strategy-adaptive-trend-channel",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "AdaptiveTrendChannel follows price with a channel that adjusts as the market moves.",
   "type": "module",
   "packageManager": "yarn@4.13.0",
