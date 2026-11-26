@@ -1,6 +1,10 @@
 # @tradejs/strategy-adaptive-trend-channel
 
-TradeJS strategy plugin providing `AdaptiveTrendChannel`.
+AdaptiveTrendChannel follows price with a channel that adjusts as the market
+moves. It uses smoothed candles to check whether the current direction has
+lost support or resistance.
+
+[See examples and configuration in the TradeJS Marketplace](https://tradejs.dev/marketplace/adaptive-trend-channel).
 
 ## Strategy overview
 
